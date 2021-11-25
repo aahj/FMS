@@ -11,7 +11,7 @@ app.use((req, res, next) => {
   if (token && token.startsWith("Bearer")) {
     token = token.split(" ")[1];
   }
-  if (req.url === "/api/v1/auth" || req.url === "/api/v1/userRegister") {
+  if (req.url === "/api/v1/auth" || req.url === "/api/v1/userRegister" || req.url === "/api/v1/airplane") {
     next();
   } else if (token) {
     jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
