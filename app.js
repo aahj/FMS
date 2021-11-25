@@ -1,17 +1,23 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 
 const app = express();
 if (process.env.NODE_ENV !== "production")
   require("dotenv").config({ path: "./.env" });
 
 app.use(express.json());
+app.use(cors());
 app.use((req, res, next) => {
   let token = req.headers.authorization;
   if (token && token.startsWith("Bearer")) {
     token = token.split(" ")[1];
   }
-  if (req.url === "/api/v1/auth" || req.url === "/api/v1/userRegister" || req.url === "/api/v1/airplane") {
+  if (
+    req.url === "/api/v1/auth" ||
+    req.url === "/api/v1/userRegister" ||
+    req.url === "/api/v1/airplane"
+  ) {
     next();
   } else if (token) {
     jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
