@@ -44,9 +44,12 @@ exports.createAirline = async (req, res) => {
 exports.fetchAllAirline = async (req, res) => {
   const Airline = db.airline;
 
-  const airline = await Airline.findAll({include:{all:true}});
+  const airline = await Airline.findAll({
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  });
   if (airline.length == 0) {
-   return res.status(404).json({
+    return res.status(404).json({
       success: false,
       message: "Airline not found",
     });
@@ -62,9 +65,13 @@ exports.fetchAirlineById = async (req, res) => {
   const Airline = db.airline;
   const id = req.params.id;
 
-  const airline = await Airline.findOne({ where: { id: id },include:{all:true} });
+  const airline = await Airline.findOne({
+    where: { id: id },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (!airline) {
-   return res.status(404).json({
+    return res.status(404).json({
       success: false,
       message: "Airline not found",
     });
@@ -94,13 +101,13 @@ exports.updateAirline = async (req, res) => {
       where: { id: id },
     });
     if (airline[0] === 1) {
-    return  res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Airline updated",
       });
     }
     if (airline[0] === 0) {
-     return res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "Airline not found",
       });

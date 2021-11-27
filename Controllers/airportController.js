@@ -44,7 +44,9 @@ exports.createAirport = async (req, res) => {
 exports.fetchAllAirport = async (req, res) => {
   const Airport = db.airport;
 
-  const airport = await Airport.findAll({});
+  const airport = await Airport.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  });
   if (airport.length == 0) {
     return res.status(404).json({
       success: false,
@@ -62,7 +64,10 @@ exports.fetchAirportById = async (req, res) => {
   const Airport = db.airport;
   const id = req.params.id;
 
-  const airport = await Airport.findOne({ where: { id: id } });
+  const airport = await Airport.findOne({
+    where: { id: id },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  });
   if (!airport) {
     return res.status(404).json({
       success: false,

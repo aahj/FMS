@@ -55,7 +55,10 @@ exports.createCrew = async (req, res) => {
 exports.fetchAllCrew = async (req, res) => {
   const Crew = db.crew;
 
-  const crew = await Crew.findAll({include:{all:true}});
+  const crew = await Crew.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (crew.length == 0) {
     return res.status(404).json({
       success: false,
@@ -73,7 +76,11 @@ exports.fetchCrewById = async (req, res) => {
   const Crew = db.crew;
   const id = req.params.id;
 
-  const crew = await Crew.findOne({ where: { id: id },include:{all:true} });
+  const crew = await Crew.findOne({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: { id: id },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (!crew) {
     return res.status(404).json({
       success: false,

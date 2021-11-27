@@ -76,7 +76,10 @@ exports.createBoardingPass = async (req, res) => {
 exports.fetchAllBoardingPass = async (req, res) => {
   const BoardingPass = db.boardingPass;
 
-  const boardingPass = await BoardingPass.findAll({include:{all:true}});
+  const boardingPass = await BoardingPass.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (boardingPass.length == 0) {
     res.status(404).json({
       success: false,
@@ -94,7 +97,11 @@ exports.fetchBoardingPassById = async (req, res) => {
   const BoardingPass = db.boardingPass;
   const id = req.params.id;
 
-  const boardingPass = await BoardingPass.findOne({ where: { id: id },include:{all:true} });
+  const boardingPass = await BoardingPass.findOne({
+    where: { id: id },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (!boardingPass) {
     res.status(404).json({
       success: false,

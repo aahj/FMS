@@ -3,7 +3,10 @@ let db = require("../models/index");
 exports.fetchAllTicket = async (req, res) => {
   const Ticket = db.ticket;
 
-  const ticket = await Ticket.findAll({include:{all:true}});
+  const ticket = await Ticket.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (ticket.length == 0) {
     res.status(404).json({
       success: false,
@@ -21,7 +24,11 @@ exports.fetchTicketById = async (req, res) => {
   const Ticket = db.ticket;
   const id = req.params.id;
 
-  const ticket = await Ticket.findOne({ where: { id: id },include:{all:true} });
+  const ticket = await Ticket.findOne({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: { id: id },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (!ticket) {
     return res.status(404).json({
       success: false,

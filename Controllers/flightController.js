@@ -47,7 +47,10 @@ exports.createFlight = async (req, res) => {
 exports.fetchAllFlight = async (req, res) => {
   const Flight = db.flight;
 
-  const flight = await Flight.findAll({include:{all:true}});
+  const flight = await Flight.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (flight.length == 0) {
     return res.status(404).json({
       success: false,
@@ -65,7 +68,11 @@ exports.fetchFlightById = async (req, res) => {
   const Flight = db.flight;
   const id = req.params.id;
 
-  const flight = await Flight.findOne({ where: { id: id } ,include:{all:true}});
+  const flight = await Flight.findOne({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: { id: id },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (!flight) {
     return res.status(404).json({
       success: false,

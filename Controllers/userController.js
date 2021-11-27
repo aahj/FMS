@@ -34,7 +34,9 @@ exports.registerUser = async (req, res) => {
 exports.fetchAllUser = async (req, res) => {
   const User = db.user;
 
-  const user = await User.findAll({});
+  const user = await User.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  });
   if (user.length == 0) {
     return res.status(404).json({
       success: false,
@@ -53,7 +55,10 @@ exports.fetchUserById = async (req, res) => {
   const User = db.user;
   const id = req.params.id;
 
-  const user = await User.findOne({ where: { id: id } });
+  const user = await User.findOne({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: { id: id },
+  });
   if (!user) {
     return res.status(404).json({
       success: false,

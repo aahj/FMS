@@ -45,7 +45,10 @@ exports.createAirplane = async (req, res) => {
 exports.fetchAllAirplane = async (req, res) => {
   const Airplane = db.airplane;
 
-  const airplane = await Airplane.findAll({include:{all:true}});
+  const airplane = await Airplane.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (airplane.length == 0) {
     return res.status(404).json({
       success: false,
@@ -63,7 +66,11 @@ exports.fetchAirplaneById = async (req, res) => {
   const Airplane = db.airplane;
   const id = req.params.id;
 
-  const airplane = await Airplane.findOne({ where: { id: id },include:{all:true} });
+  const airplane = await Airplane.findOne({
+    where: { id: id },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  });
   if (!airplane) {
     return res.status(404).json({
       success: false,

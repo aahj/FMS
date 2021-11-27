@@ -30,7 +30,10 @@ exports.createPassenger = async (req, res) => {
 exports.fetchAllPassenger = async (req, res) => {
   const Passenger = db.passenger;
 
-  const passenger = await Passenger.findAll({include:{all:true}});
+  const passenger = await Passenger.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (passenger.length == 0) {
     return res.status(404).json({
       success: false,
@@ -48,7 +51,11 @@ exports.fetchPassengerById = async (req, res) => {
   const Passenger = db.passenger;
   const id = req.params.id;
 
-  const passenger = await Passenger.findOne({ where: { id: id } ,include:{all:true}});
+  const passenger = await Passenger.findOne({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: { id: id },
+    include: { all: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
+  });
   if (!passenger) {
     return res.status(404).json({
       success: false,
