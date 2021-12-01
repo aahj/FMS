@@ -93,7 +93,7 @@ exports.updateAirline = async (req, res) => {
 
     const newData = {
       name: body.name,
-      phone: body.lastName,
+      phone: body.phone,
       address: body.address,
     };
 
