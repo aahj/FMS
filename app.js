@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== "production")
   require("dotenv").config({ path: "./.env" });
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 app.use((req, res, next) => {
   let token = req.headers.authorization;
   if (token && token.startsWith("Bearer")) {
