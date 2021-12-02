@@ -120,14 +120,51 @@ exports.updateBoardingPass = async (req, res) => {
 
   try {
     const BoardingPass = db.boardingPass;
+    const Passenger = db.passenger;
+    const Ticket = db.ticket;
+    const Flight = db.flight;
+    const Baggage = db.Baggage;
     const body = req.body;
     const id = req.params.id;
 
+    const findBoarding = await BoardingPass.findOne({ where: { id: id } });
+    if (!findBoarding) {
+      return res.status(404).json({
+        success: false,
+        message: "Boarding Pass not found",
+      });
+    }
+    if (body.passenger) {
+      const updatePassenger = await Passenger.update(body.passenger, {
+        where: { id: findBoarding.passengerId },
+      });
+
+      if (updatePassenger[0] === 0) {
+        throw { message: "failed to update passenger" };
+      }
+    }
+
+    if (body.ticket) {
+      const updateTicket = await Ticket.update(body.ticket, {
+        where: { id: findBoarding.ticketId },
+      });
+      if (updateTicket[0] === 0) {
+        throw { message: "failed to update ticket" };
+      }
+    }
+
+    if (body.baggage) {
+      const updateBaggage = await Baggage.update(body.baggage, {
+        where: { id: findBoarding.baggageId },
+      });
+      if (updateBaggage[0] === 0) {
+        throw { message: "failed to update baggage" };
+      }
+    }
+
     const newData = {
-      firstName: body.firstName,
-      lastName: body.lastName,
-      phone: body.phone,
-      designation: body.designation,
+      hasCheckin: body.hasCheckin,
+      gate: body.gate,
       flightId: body.flightId,
     };
 
@@ -139,19 +176,20 @@ exports.updateBoardingPass = async (req, res) => {
       { transaction }
     );
     if (boardingPass[0] === 1) {
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "BoardingPass updated",
       });
     }
     if (boardingPass[0] === 0) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "BoardingPass not found",
       });
     }
     await transaction.commit();
   } catch (error) {
+    
     await transaction.rollback();
     res.status(500).json({
       success: false,
